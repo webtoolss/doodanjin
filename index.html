@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>BNB Deposit</title>
+    <style>
+      body {
+        background-color: #f4f9fb;
+        color: #333;
+        font-family: sans-serif;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        color: #222;
+        font-weight: bold;
+        margin-top: 0;
+      }
+      p {
+        margin: 0 0 1em;
+      }
+      label {
+        display: block;
+        margin-bottom: 0.5em;
+      }
+      input {
+        display: block;
+        width: 100%;
+        padding: 0.5em;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        margin-bottom: 1em;
+      }
+      button {
+        background-color: #00bfff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        padding: 0.5em 1em;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #007fff;
+      }
+      #connect-wallet-button {
+        display: block;
+        margin-bottom: 1em;
+      }
+      hr {
+        margin: 1em 0;
+        border: none;
+        border-top: 1px solid #ccc;
+      }
+      #balance {
+        font-weight: bold;
+        color: #00bfff;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>BNB Deposit</h1>
+    <p>Connect your wallet to deposit BNB BEP20 tokens:</p>
+    <button id="connect-wallet-button">Connect Wallet</button>
+    <hr />
+    <p>Deposit BNB BEP20 tokens:</p>
+    <label for="deposit-amount">Amount:</label>
+    <input type="number" id="deposit-amount" />
+    <button id="deposit-button">Deposit</button>
+    <hr />
+    <p>Your balance: <span id="balance"></span></p>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@walletconnect/web3-provider@1.7.3/dist/cjs/index.min.js"></script>
+    <script>
+      let provider;
+      let signer;
+      let bnbDepositContract;
+      
+      const connectWalletButton = document.querySelector("#connect-wallet-button");
+      const depositButton = document.querySelector("#deposit-button");
+      const depositAmountInput = document.querySelector("#deposit-amount");
+      const balanceSpan = document.querySelector("#balance");
+      
+      async function connectWallet() {
+        try {
+          // Create a WalletConnect provider
+          provider = new WalletConnectProvider({
+            rpc: {
+              56: "https://bsc-dataseed1.binance.org",
+              97: "https://data-seed-prebsc-1-s1.binance.org:8545/"
+            }
+          });
+          
+          // Enable the provider
+          await provider.enable();
+          
+          // Create a Web3 signer
+          const web3 = new Web3(provider);
+          signer = web3.eth.accounts.wallet[0];
+          
+          // Get the contract instance
+          const bnbTokenAddress = "0xB8c77482e45F1F44dE1745F52C74426C631bDD52"; // Replace with the address of the BNB BEP20 token
